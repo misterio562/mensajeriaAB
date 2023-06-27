@@ -29,7 +29,7 @@ app.post("/login-authentication", (req, res) => {
 
     if (results.length === 0) {
       // Credenciales incorrectas
-      res.status(401).json({ message: "Credenciales inválidas" });
+      res.status(401).json({ message: "Usuario o contraseña incorrectos" });
     } else {
       // Credenciales correctas
       res.status(200).json({ message: "Inicio de sesión exitoso" });

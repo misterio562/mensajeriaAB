@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorLogin, setErrorLogin] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -22,22 +23,26 @@ const Login = () => {
     console.log("Contraseña: ", password);
 
     try {
-      const response = await fetch("http://localhost:4000/login-authentication", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await fetch(
+        "http://localhost:4000/login-authentication",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         console.log("Respuesta del servidor: ", data);
-        // Redirige a dashboard
         router.push("/dashboard");
       } else {
-        console.log("Error en la solicitud: ", response.status);
-        // Realizar acciones correspondientes al error
+        const data = await response.json();
+        console.log("Error en la solicitud: ", data);
+        setErrorLogin(data.message);
+        setPassword("");
       }
     } catch (error) {
       console.log("Error en la solicitud: ", error);
@@ -66,6 +71,7 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {errorLogin && <p className="text-red-500">{errorLogin}</p>}
           <button
             type="submit"
             className="bg-black text-white text-2xl rounded-md"
